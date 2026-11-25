@@ -1,60 +1,54 @@
 #!/usr/bin/env python3
-"""Entry program for make.fun news-image-20261125.
+"""Carry the finished 25 November front page to the grader's output.
 
-Copies the pre-rendered entry.png (next to this file) to
-$MAKEFUN_OUTPUT_DIR/entry.png (default /output/entry.png), byte for byte,
-so two runs write identical bytes. Standard library only; no network.
-
-The image is a 1024x1024 'THE WORLD IN ONE DAY' newspaper front page
-summing up Wednesday 25 November 2026's world news: China launching the
-first Pakistani to orbit; Asia stocks tumbling on the US tariff threat;
-the Gaza death toll reaching 74,746; Australia signing the Solomons
-defence pact; the CIA/ODNI cyber breach; Australian inflation; oil
-sliding; Russia's own data showing 490,334 war dead; the WHO fleeing a
-Congo Ebola hospital; Huawei's guilty verdict; Houthis hitting Riyadh's
-tallest tower; Senegal keeping the AFCON crown; plus a 12-item
-date-flagged tail list and a DATE CHECK box (12 of the 24 stories stem
-from Tue 24 Nov and are flagged [24 Nov], never presented as 25 Nov
-events). Same proven format as the 23 Nov entry (round 3 rank
-219/13,031, top 1.7%).
+The picture is rendered beforehand (BUILD.md lists the 24 verified stories
+and the newspaper design). This program does one job: copy entry.png next
+to it into the directory the grader names, byte for byte, after proving
+the file really is the PNG it claims to be. Standard library only, no
+network, no randomness, no third-party code, so two runs always agree.
 """
-import hashlib
-import os
-import shutil
-import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "entry.png")
+from hashlib import sha256
+from pathlib import Path
 
-PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+MAGIC = bytes((0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A))  # the 8-byte PNG signature
+SOURCE = Path(__file__).resolve().parent / "entry.png"
+CHUNK = 1 << 16
 
 
-def _sha256(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(65536), b""):
-            h.update(chunk)
-    return h.hexdigest()
+def fingerprint(path):
+    """SHA-256 of a file, read in blocks."""
+    total = sha256()
+    with path.open("rb") as handle:
+        while True:
+            block = handle.read(CHUNK)
+            if not block:
+                break
+            total.update(block)
+    return total.hexdigest()
 
 
-def main():
-    if not os.path.isfile(SRC):
-        print(f"error: source image not found: {SRC}", file=sys.stderr)
+def hand_in():
+    """Copy SOURCE to the output directory and verify the copy."""
+    import os
+
+    if not SOURCE.is_file():
+        print(f"missing source image: {SOURCE}")
         return 1
-    with open(SRC, "rb") as f:
-        if f.read(len(PNG_MAGIC)) != PNG_MAGIC:
-            print(f"error: source is not a PNG file: {SRC}", file=sys.stderr)
+    with SOURCE.open("rb") as handle:
+        if handle.read(len(MAGIC)) != MAGIC:
+            print(f"not a PNG file: {SOURCE}")
             return 1
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-    os.makedirs(out_dir, exist_ok=True)
-    dst = os.path.join(out_dir, "entry.png")
-    shutil.copyfile(SRC, dst)
-    if _sha256(dst) != _sha256(SRC):
-        print(f"error: copy verification failed: {dst}", file=sys.stderr)
+    target_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / "entry.png"
+    target.write_bytes(SOURCE.read_bytes())
+    if fingerprint(target) != fingerprint(SOURCE):
+        print(f"copy mismatch: {target}")
         return 1
-    print(f"wrote {dst} ({os.path.getsize(dst)} bytes, sha256 {_sha256(dst)})")
+    print(f"wrote {target} ({target.stat().st_size} bytes, sha256 {fingerprint(target)})")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(hand_in())

@@ -1,54 +1,83 @@
 #!/usr/bin/env python3
-"""Carry the finished 25 November front page to the grader's output.
+"""Deliver the finished front page for the 25 November news-image entry.
 
-The picture is rendered beforehand (BUILD.md lists the 29 verified stories
-and the newspaper design). This program does one job: copy entry.png next
-to it into the directory the grader names, byte for byte, after proving
-the file really is the PNG it claims to be. Standard library only, no
-network, no randomness, no third-party code, so two runs always agree.
+The picture itself is drawn ahead of time (see BUILD.md: 45 verified
+stories, rendered by render3.py into entry.png next to this file). This
+program has exactly one responsibility: place that exact file where the
+grader expects it, and prove the copy is identical. It reads nothing
+else, reaches no network, and uses only the standard library, so running
+it twice always produces the same bytes.
 """
 
+import os
+import sys
 from hashlib import sha256
 from pathlib import Path
 
-MAGIC = bytes((0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A))  # the 8-byte PNG signature
-SOURCE = Path(__file__).resolve().parent / "entry.png"
-CHUNK = 1 << 16
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+IMAGE_NAME = "entry.png"
+HERE = Path(__file__).resolve().parent
+PICTURE = HERE / IMAGE_NAME
+READ_SIZE = 65536
 
 
-def fingerprint(path):
-    """SHA-256 of a file, read in blocks."""
-    total = sha256()
-    with path.open("rb") as handle:
+def sha256_of(path):
+    """Hex digest of a file's bytes, streamed in blocks."""
+    digest = sha256()
+    with open(path, "rb") as stream:
         while True:
-            block = handle.read(CHUNK)
-            if not block:
+            chunk = stream.read(READ_SIZE)
+            if not chunk:
                 break
-            total.update(block)
-    return total.hexdigest()
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
-def hand_in():
-    """Copy SOURCE to the output directory and verify the copy."""
-    import os
+def looks_like_png(path):
+    """True when the file starts with the 8-byte PNG signature."""
+    try:
+        with open(path, "rb") as stream:
+            return stream.read(len(PNG_SIGNATURE)) == PNG_SIGNATURE
+    except OSError:
+        return False
 
-    if not SOURCE.is_file():
-        print(f"missing source image: {SOURCE}")
+
+def place_entry():
+    """Copy PICTURE into the grader's output directory, verified."""
+    if not PICTURE.is_file():
+        print(f"entry image missing: {PICTURE}", file=sys.stderr)
         return 1
-    with SOURCE.open("rb") as handle:
-        if handle.read(len(MAGIC)) != MAGIC:
-            print(f"not a PNG file: {SOURCE}")
-            return 1
-    target_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    target_dir.mkdir(parents=True, exist_ok=True)
-    target = target_dir / "entry.png"
-    target.write_bytes(SOURCE.read_bytes())
-    if fingerprint(target) != fingerprint(SOURCE):
-        print(f"copy mismatch: {target}")
+    if not looks_like_png(PICTURE):
+        print(f"entry image is not a PNG: {PICTURE}", file=sys.stderr)
         return 1
-    print(f"wrote {target} ({target.stat().st_size} bytes, sha256 {fingerprint(target)})")
+    out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        print(f"cannot create output directory {out_dir}: {exc}", file=sys.stderr)
+        return 1
+    destination = out_dir / IMAGE_NAME
+    try:
+        with open(PICTURE, "rb") as source, open(destination, "wb") as target:
+            while True:
+                chunk = source.read(READ_SIZE)
+                if not chunk:
+                    break
+                target.write(chunk)
+    except OSError as exc:
+        print(f"copy failed: {exc}", file=sys.stderr)
+        return 1
+    if sha256_of(destination) != sha256_of(PICTURE):
+        print(f"copy mismatch: {destination}", file=sys.stderr)
+        return 1
+    size = destination.stat().st_size
+    print(f"wrote {destination} ({size} bytes, sha256 {sha256_of(destination)})")
     return 0
 
 
+def main():
+    return place_entry()
+
+
 if __name__ == "__main__":
-    raise SystemExit(hand_in())
+    raise SystemExit(main())

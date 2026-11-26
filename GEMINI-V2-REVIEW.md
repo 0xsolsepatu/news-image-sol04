@@ -66,3 +66,63 @@ be [25 Nov] PURE if the toll was reported Wed 25 Nov.
 - Pass 2: geometry fixes adopted; story-cut rejected with evidence.
 - Pass 3: GO (the one flagged item is a Gemini misread, verified false).
 - Build proceeds to push + submit.
+
+---
+
+## REBUILD v3 — Gemini reviews (27 Nov 2026)
+
+### Pass 1 — design review, pre-build (~00:35 WIB, 2,145 tokens)
+Prompt: 45-story plan (3 leads + 15 grid + 27 tail), geometry budget,
+6-entry timeline, 12 map pins, 17 drawn elements.
+Verdict: GO WITH CHANGES.
+- (1) Grid cards 60px -> 64px (3 lines of text need ~51-55px + padding).
+  ADOPTED: cards 64px, grid 296-640.
+- (2) Tail rows 22px stacked headline+deck = overlap risk; use 30px rows
+  or single-line lead-in rows. ADOPTED in the single-line form: tail items
+  become one-liners ("[tag] Headline — deck" at 9.5pt, 18px rows, 27 items
+  in 2 cols x 14 rows). The 30px-row alternative would have forced cutting
+  the tail to 21 items; the single-line form keeps all 45 stories.
+- (3) Bottom row 100px too small for 12 pins + legend + DATE CHECK +
+  6-entry timeline; cut tail to 21 and expand to 130px. NOT ADOPTED as
+  stated: the bottom row stays ~94px (v2's 98px row already held 10 pins +
+  DATE CHECK + 4-entry timeline cleanly); the 6-entry timeline uses 4
+  staggered label rows (2 above, 2 below the axis) to avoid collisions,
+  and the map legend stays 2 lines at 7.5pt. Verified by render + visual
+  read instead of by cutting stories.
+- Thumbnail legibility: masthead + stats legible at 300px; lead headlines
+  marginal; grid headlines unreadable as text at 300px but fine as
+  structural blocks (judge reads hierarchy, not raw text, at thumbnail).
+- Fact flags — ALL VERIFIED against sources before acting:
+  * Nvidia date/market: CONFIRMED. S&P action "on Wednesday" (Reuters,
+    25 Nov); Wed 25 Nov was a normal session, Nasdaq fell 2% Wednesday
+    (Reuters wrap); markets closed Thu for Thanksgiving. No change.
+  * SpaceX "Starmind": Gemini doubted the name. PROVEN REAL — AP
+    (NPR Illinois, 26 Nov 00:53 CST): "a data center constellation called
+    'Starmind'"; Reuters 25 Nov: FCC "approving the SpaceX 'Starmind'
+    constellation"; WSJ/CNN confirm. Gemini's doubt was wrong. No change.
+  * US Army Iowa blast: CONFIRMED — Des Moines Register: "roughly 9,500
+    pounds", "9 a.m. blast on Wednesday, Nov. 25"; Wikipedia entry:
+    9:00 AM CST (15:00 UTC), 68 drums, Iowa Army Ammunition Plant.
+    "9,500 lb" is the Army's stated figure (some sources say 9,700 lb net
+    explosive weight; the deck uses the Army's 9,500). No change.
+  * Andy Taylor tense: Gemini wants "announced Wed" (past) instead of
+    "announces". NOT ADOPTED: "announces" is standard headline present
+    tense for a Wednesday-dated paper, and the deck states he died Monday.
+    No change.
+
+### Pass 3 — post-build review (~01:00 WIB, 1,800 tokens)
+Prompt: the built v3 entry (full 45-story list, stat strip, DATE CHECK,
+6-entry timeline, 12 pins, the two fixes already made, 300px legibility).
+Verdict: GO. No remaining concrete problems. Layout verified clean
+(0 issues, byte-identical renders, timeline collision resolved, no
+multi-line grid decks).
+- Fact flag — Andy Taylor: Gemini claimed he "actually passed away on
+  November 24, 2023". VERIFIED FALSE against the sources: Reuters
+  25 Nov 2026 ("died at age 65 on Monday", joint statement released
+  Wednesday), BBC/CNN/AP all 25 Nov 2026, died Mon 23 Nov 2026 of
+  metastatic prostate cancer. Gemini hallucinated the 2023 date. No change.
+- All other stories: no flags.
+- Honest assessment: density alone is unlikely to bridge the 13k gap to
+  the prize line; expects high 970ks; top 50 would need qualitative
+  polish, not just more stories. Kept as the honest note (same as v2:
+  top 50 is a stretch, not a promise). Effective verdict: GO.

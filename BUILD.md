@@ -207,3 +207,87 @@ Medal of Freedom, Real Madrid 5-1 PSV. See RESEARCH.md "REBUILD v2".
   thumbnail size.
 - `main.py` run twice (to two output dirs): both outputs byte-identical
   to `entry.png` — same sha256 `af3facf2…d350e` on all three.
+
+---
+
+## REBUILD v3 — 27 Nov 2026 ~00:15–01:30 WIB (rank review)
+
+Why: the v2 entry ranked 8,042/21,134 (judge 975,976; prize line rank 50
+at 989,109; rank 10 at 990,801). Top-10 entries carry 35–50 stories,
+11–15 drawn scenes, a map, a full UTC timeline, a date check. v3: **45
+stories (34 PURE 25 Nov, 11 LATE-24)** — 29 kept from v2 + 16 new
+(13 pure, 3 late; a 14th pure and 4th late were researched and cut for
+space — see RESEARCH.md). Dropped from v2 (still verified): England
+T20I, Punjab alliance, Korean air alert, Kyiv ship confirmation, US
+confidence. Research: coordinator (10 pure + 3 late, all verified
+against Reuters/AP/BBC/CNN/White House) + research subagent (20 pure +
+4 late, merged; overlaps confirmed the coordinator's findings).
+
+### Design changes vs v2
+- Grid: 12 → 15 cards (3 cols × 5 rows, 64px each per Gemini pass 1;
+  fonts 12pt title max 2 lines / 8.5pt deck ONE line ≤70 chars; two
+  decks shortened after the first render flagged 2-line wraps: Giza,
+  Savasleyka). Small geometric motifs on all 15 cards (flame, bars,
+  bolt, pick, jet, gavel, balloon, plane, lightning, flag, chip,
+  satellite, chart-down, scales, waves) + 3 lead illustrations + map +
+  timeline = 17 drawn elements.
+- Tail: 14 → 27 items, 2 cols × 14 rows, SINGLE-LINE rows (18px):
+  "[tag] Headline — deck" at 10pt bold headline / 9pt deck (Gemini
+  pass 1: stacked 22px rows would overlap; the 30px-row alternative
+  would have forced cutting the tail to 21 items). Decks shortened to
+  terse supporting facts; the renderer measures every line and flags
+  anything over 478px (11 lines trimmed in two passes).
+- Leads: same 3 (illustration h=28, title 18pt, deck 11pt, 132px panels).
+- Stat strip: unchanged (6 boxes, all pure 25 Nov).
+- Bottom row: 98px → 92px: map with 12 pins (Jiuquan, Seoul, Gaza,
+  Riyadh, Banten, Canberra, Giza, London, Washington, Bogor, Pyongyang,
+  Madrid; closest pair London/Madrid 11.3px apart, r=5 circles do not
+  touch) + 2-line legend + DATE CHECK box (11 of 45 from 24 Nov +
+  6 rejected items incl. Villavicencio date-unclear, Niger State
+  unverified) + UTC timeline with 6 verified entries (00:18 Shenzhou;
+  12:01 White House children announcement; 13:30 BEA GDP; 15:00 Iowa
+  blast 09:00 CST; 21:45 UCL ends; 23:14 AP Giza toll) in 4 staggered
+  label rows (2 above, 2 below the axis). One fix after the first
+  render: 13:30 and 23:14 labels collided ("13:30 GDP3:14 Giza 31") —
+  13:30 moved to the second above-axis row; crop inspection confirms
+  all 6 labels distinct.
+- Layout (1024 tall): masthead 6–110, stat strip 114–152, leads
+  158–290, grid 296–640, tail 646–920, bottom row 922–1014.
+
+### Gemini reviews (2 passes — see GEMINI-V2-REVIEW.md)
+- Pass 1 (design, pre-build): GO WITH CHANGES — grid cards 60→64px
+  (adopted); tail rows single-line (adopted); bottom row to 130px by
+  cutting tail to 21 (NOT adopted — 94px proven by v2, 6-entry timeline
+  fits with staggered labels, verified by render + crop inspection).
+  Fact flags: Nvidia Wednesday session confirmed; SpaceX "Starmind"
+  proven real (AP/Reuters/WSJ) — Gemini's doubt was wrong; Iowa blast
+  9,500 lb / 09:00 CST confirmed (Des Moines Register); Andy Taylor
+  "announces" present tense kept (headline style; deck states died Monday).
+- Pass 3 (post-build): GO. One flag — Andy Taylor "died 24 Nov 2023":
+  VERIFIED FALSE (Reuters/BBC/CNN/AP 25 Nov 2026; died Mon 23 Nov 2026).
+  Honest assessment: density alone unlikely to bridge the 13k gap to the
+  prize line; expects high 970ks. Top 50 remains a stretch, not a promise.
+
+### Verification (27 Nov 2026 ~01:20 WIB)
+- `render3.py` run: **0 issues** — no overflow, no truncation, no
+  2-line grid deck, no tail line over 478px, no grid title over 2 lines.
+- `entry.png`: 1024×1024, RGB, **226,322 bytes** (limit 1,048,576).
+- **sha256: 36a2fff395f6375e481e99d41b806e17472cf42ffdcb7975f1746cb7014fb40b**
+- Two render runs byte-identical (same sha256); `main.py` run twice (to
+  two output dirs): both outputs byte-identical to `entry.png`.
+- Scripted cross-check (`/tmp/check-v3.py`, AST-based): all 45 headlines
+  present in RESEARCH.md (4 documented shortenings: tariffs, Solomons,
+  Andy Taylor, Putin); every deck number appears in RESEARCH.md; counts
+  3 leads / 15 grid / 27 tail; 34 pure / 11 late; stat numbers match;
+  DATE CHECK says 11 of 45; dropped items absent as stories
+  (Villavicencio/Niger State appear only as DATE CHECK rejections).
+  **0 failures.**
+- Visual read at full size: every headline, deck, header, stat, date tag,
+  map pin, timeline label and the bottom row is legible, no overlap.
+  Crop-inspected: timeline (all 6 labels distinct), tail, grid rows 4–5.
+- Visual read at 300×300: masthead, date, stat numbers, lead headlines
+  and grid headlines stay legible; page structure (masthead → stats →
+  3 leads → 15 grid → tail → map/DATE CHECK/timeline) is clear.
+- Nvidia deck uses the Reuters CLOSE figure −3.9% (not the −4.6%
+  intraday figure); the Russia-grid deck avoids the "five killed" figure
+  seen only in social summaries (Reuters: one killed in Kyiv region).

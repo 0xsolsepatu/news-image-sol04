@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Carry the finished 25 November front page to the grader's output.
 
-The picture is rendered beforehand (BUILD.md lists the 24 verified stories
+The picture is rendered beforehand (BUILD.md lists the 29 verified stories
 and the newspaper design). This program does one job: copy entry.png next
 to it into the directory the grader names, byte for byte, after proving
 the file really is the PNG it claims to be. Standard library only, no

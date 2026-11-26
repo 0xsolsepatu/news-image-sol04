@@ -131,3 +131,79 @@ name or claim was invented, embellished or merged; attributions
   headlines and grid headlines stay legible; the page structure
   (masthead → stats → 3 leads → 9 grid → tail → map/DATE CHECK/
   timeline → footer) is clear at thumbnail size.
+
+---
+
+## REBUILD v2 — 26 Nov 2026 ~09:00–09:45 WIB (rank review, solsepatu's 08:20 order)
+
+Why: the v1 entry ranked 6,907/10,309 (judge 949,581; prize line 987,839;
+gap 38,258 micro). Top-10 entries carry 32–55 stories, 15–21 drawn
+fields, full UTC timelines, 10 regions. v2 closes the gap: **29 stories
+(17 pure 25 Nov, 12 late-24)**, 6-stat strip (all pure), 10 map pins,
+4-entry UTC timeline. 21 stories kept from v1; 8 new (Giza tanker, US
+GDP/PCE, UK energy cap, West Java mine, UCL Wed night — all pure 25 Nov;
+Dell, US confidence, Sooryavanshi — late-24). Dropped for space (still
+verified): Citi Venezuela, Microsoft Code Red, Senegal AFCON, Giuliani
+Medal of Freedom, Real Madrid 5-1 PSV. See RESEARCH.md "REBUILD v2".
+
+### Design changes vs v1
+- Stat strip: 5 → 6 boxes (74,746 Gaza; 490,334 Russia; 5,775 Congo;
+  −5.3% S. Korea; 31 Giza; 4.3% US GDP). The 266M hunger figure moved to
+  the tail (it is a 24 Nov warning).
+- Grid: 9 → 12 cards (3 cols × 4 rows, 74px each; fonts 13pt/10pt).
+  Two small top-right motifs kept (oil falling-chart, Giza flame);
+  the other 10 cards use typographic tags only (per Gemini pass 1).
+- Tail: 12 → 14 items (2 cols × 7 rows, 28px each; headline 12pt +
+  1-line deck 9.5pt). US tariffs deck corrected per the Reuters wire
+  of 25 Nov: 14 partners (not 16), China 20% on top of existing ~25%,
+  Mexico and Norway spared.
+- Bottom row: 70px → 98px (per Gemini pass 2): map with 10 pins
+  (Jiuquan, Seoul, Gaza, Riyadh, Banten, Canberra, Giza, London,
+  Washington, Bogor; 2-line legend) + DATE CHECK box (6 lines, incl. the
+  6 rejected items) + UTC timeline with 4 verified entries (00:18 GMT
+  Shenzhou-24 lifts off; 13:30 GMT BEA GDP 4.3%; 21:45 GMT UCL night
+  ends — PSG held 2-2, Bayern beaten; 23:14 GMT AP reports Giza toll 31).
+- No separate footer (bottom row ends 1014, 10px margin).
+- Layout (1024 tall): masthead 8–132, stat strip 138–182, leads
+  190–362 (illustrations rescaled to h=46), grid 370–684, tail 692–914,
+  bottom row 916–1014.
+
+### Gemini reviews (3 passes — see GEMINI-V2-REVIEW.md)
+- Pass 1 (design, pre-build): 40–50 stories too dense; aim 32–35, no
+  20-item tail, 3-tier flow, remove grid motifs. Adopted in revised form.
+  Gemini's "larger canvases" claim is factually wrong (cap is 1024×1024).
+- Pass 2 (revised 32-story plan): GO WITH CHANGES — 71px grid cards and
+  62px bottom row would clip; expand bottom to ~110px, tail rows ≥26px,
+  cut tail to 8–10. Geometry adopted (bottom 98px, tail 28px, cards
+  74px); the story cut NOT adopted — 29 stories is the clean maximum,
+  and cutting stories would undo the main improvement.
+- Pass 3 (post-build): GO WITH CHANGES on one point — West Java mine
+  date flag. Verified false against render.py: the card is already PURE
+  (`late24=False`, no tag; cross-check pure=17). Gemini misread the
+  prompt. Effective verdict: GO. No changes applied.
+
+### Verification (26 Nov 2026 ~09:40 WIB)
+- `render.py` run: **0 issues** — no overflow, no truncation, no
+  too-long tail/date-check line, no grid title/deck over 2 lines.
+- `entry.png`: 1024×1024, RGB, **206,369 bytes** (limit 1,048,576).
+- **sha256: af3facf2ad1850c8a8d833b5093435a702aee0e6cb8a31eadb10e6da52fd350e**
+- Two render runs byte-identical (same sha256).
+- Scripted cross-check (`/tmp/check-v2.py`): all 29 headlines + decks
+  verbatim vs RESEARCH.md v2; counts 3 leads / 12 grid / 14 tail;
+  17 pure / 12 late; stat numbers match; DATE CHECK says 12 of 29;
+  dropped items (Citi, Microsoft, Senegal, Giuliani, Real Madrid) absent.
+  **0 failures.**
+- Visual read at full size: every headline, deck, header, stat, date tag
+  and the bottom row is legible, no overlap. Two fixes applied after the
+  first v2 render: (1) timeline above-axis labels merged ("off3:30") —
+  shortened the 13:30 label to "13:30 GDP 4.3%" (PCE stays in the grid
+  card deck); (2) oil-card mini-chart motif struck through the word
+  "risk" — motif cards now wrap titles to a narrower width (code fix in
+  render.py). Both verified fixed by crop inspection (timeline + oil +
+  Giza cards).
+- Visual read at 300×300: masthead, date, stat numbers, lead headlines
+  and grid headlines stay legible; the page structure (masthead → stats
+  → 3 leads → 12 grid → tail → map/DATE CHECK/timeline) is clear at
+  thumbnail size.
+- `main.py` run twice (to two output dirs): both outputs byte-identical
+  to `entry.png` — same sha256 `af3facf2…d350e` on all three.

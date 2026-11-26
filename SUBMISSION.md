@@ -90,10 +90,28 @@ density alone is unlikely to bridge the 13k gap to the prize line;
 expects high 970ks — top 50 remains a stretch, not a promise.
 
 **Push:** text files to https://github.com/0xsolsepatu/news-image-sol04
-via the github connector (push-files) — commit SHA: _to be filled by
-the coordinator after the push_. entry.png upload + submit are the
-PARENT's job (browser route) — NOT done by this run. Force_Last: the
-latest submission counts; entries close 27 Nov 07:00 WIB.
+via the github connector (push-files) — commit
+**b1d28d30e0354dfa20ce78a8ccb26d8e5ade6f33** (main.py, README.md,
+BUILD.md, SUBMISSION.md, RESEARCH.md, GEMINI-V2-REVIEW.md, LICENSE).
+main.py verified byte-identical on GitHub main (blob
+72e94d70f22c7158fadb093dfe4daff236428144). entry.png upload + submit
+are the PARENT's job (browser route) — NOT done by this run.
+Force_Last: the latest submission counts; entries close 27 Nov
+07:00 WIB. SUBMISSION.md itself was then updated with this SHA + the
+check result and pushed as a follow-up snapshot; that follow-up SHA
+is in the local sync record and the coordinator's report.
 
 **Checks:** local `makefun check` from the FRESH kit (bundle
-946c3b76…) — _result to be filled after the check run_.
+946c3b76…, kit verified 11 files) against the worktree: **4 passed,
+1 failed, 14 skipped, 5 checked at submission**. Passed:
+competition_open, snapshot (15 files, 2,864,679 bytes, within caps),
+license_osi (MIT), entrypoint (main.py → python3.13). Failed:
+transcripts_present — no transcripts bundle exists for v3 yet; the
+bundle is built by the PARENT at submit time (as in v2), so this
+failure is expected pre-submit and the 14 transcript-dependent checks
+(thinking_in_window, thinking_reproduces, thinking_priced, etc.)
+are skipped until then. At-submission checks (repo_public,
+repo_owner, repo_created_after_open, commit_in_repo,
+duplicate_snapshot) are server-side at submit; repo is public, created
+25 Nov 06:55 UTC (after the 00:00 opening), head is the pushed commit.
+`main.py` run twice byte-identical (sha256 36a2fff3…).
